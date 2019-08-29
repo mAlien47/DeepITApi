@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="testModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Drzava">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Naziv" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Grad">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Naziv" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="BrojStanovnika" Type="int" Nullable="false" />
+          <Property Name="DrzavaID" Type="int" Nullable="false" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RequestLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Request" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="VrijemePocetka" Type="datetime" Nullable="false" />
+          <Property Name="VrijemeKraja" Type="datetime" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Grad_Drzava">
+          <End Role="Drzava" Type="Self.Drzava" Multiplicity="1" />
+          <End Role="Grad" Type="Self.Grad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Drzava">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Grad">
+              <PropertyRef Name="DrzavaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="DohvatiDrzaveIGradovePoBrojuStanovnika" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="BrojStanovnika" Type="int" Mode="In" />
+        </Function>
+        <Function Name="DohvatiGradovePoDrzavi" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DrzavaID" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="testModelStoreContainer">
+          <EntitySet Name="Drzava" EntityType="Self.Drzava" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Grad" EntityType="Self.Grad" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RequestLog" EntityType="Self.RequestLog" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Grad_Drzava" Association="Self.FK_Grad_Drzava">
+            <End Role="Drzava" EntitySet="Drzava" />
+            <End Role="Grad" EntitySet="Grad" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="testModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Drzava">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Naziv" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Grad" Relationship="Self.FK_Grad_Drzava" FromRole="Drzava" ToRole="Grad" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Grad">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Naziv" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="BrojStanovnika" Type="Int32" Nullable="false" />
+          <Property Name="DrzavaID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Drzava" Relationship="Self.FK_Grad_Drzava" FromRole="Grad" ToRole="Drzava" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Grad_Drzava">
+          <End Role="Drzava" Type="Self.Drzava" Multiplicity="1" />
+          <End Role="Grad" Type="Self.Grad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Drzava">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Grad">
+              <PropertyRef Name="DrzavaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="testEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Drzava" EntityType="Self.Drzava" />
+          <EntitySet Name="Grad" EntityType="Self.Grad" />
+          <AssociationSet Name="FK_Grad_Drzava" Association="Self.FK_Grad_Drzava">
+            <End Role="Drzava" EntitySet="Drzava" />
+            <End Role="Grad" EntitySet="Grad" />
+          </AssociationSet>
+          <FunctionImport Name="DohvatiDrzaveIGradovePoBrojuStanovnika" ReturnType="Collection(testModel.DohvatiDrzaveIGradovePoBrojuStanovnika_Result)">
+          <Parameter Name="BrojStanovnika" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="DohvatiGradovePoDrzavi" ReturnType="Collection(testModel.DohvatiGradovePoDrzavi_Result)">
+          <Parameter Name="DrzavaID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="RequestLog" EntityType="testModel.RequestLog" />
+        </EntityContainer>
+        <ComplexType Name="DohvatiDrzaveIGradovePoBrojuStanovnika_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Naziv" Nullable="false" MaxLength="256" />
+          <Property Type="Int32" Name="IsDrzava" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="DohvatiGradovePoDrzavi_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Naziv" Nullable="false" MaxLength="256" />
+        </ComplexType>
+        <EntityType Name="RequestLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Request" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="VrijemePocetka" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="VrijemeKraja" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="testModelStoreContainer" CdmEntityContainer="testEntities">
+          <EntitySetMapping Name="Drzava">
+            <EntityTypeMapping TypeName="testModel.Drzava">
+              <MappingFragment StoreEntitySet="Drzava">
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Naziv" ColumnName="Naziv" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Grad">
+            <EntityTypeMapping TypeName="testModel.Grad">
+              <MappingFragment StoreEntitySet="Grad">
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Naziv" ColumnName="Naziv" />
+                <ScalarProperty Name="BrojStanovnika" ColumnName="BrojStanovnika" />
+                <ScalarProperty Name="DrzavaID" ColumnName="DrzavaID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="DohvatiDrzaveIGradovePoBrojuStanovnika" FunctionName="testModel.Store.DohvatiDrzaveIGradovePoBrojuStanovnika">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="testModel.DohvatiDrzaveIGradovePoBrojuStanovnika_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Naziv" ColumnName="Naziv" />
+                <ScalarProperty Name="IsDrzava" ColumnName="IsDrzava" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="DohvatiGradovePoDrzavi" FunctionName="testModel.Store.DohvatiGradovePoDrzavi">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="testModel.DohvatiGradovePoDrzavi_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Naziv" ColumnName="Naziv" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="RequestLog">
+            <EntityTypeMapping TypeName="testModel.RequestLog">
+              <MappingFragment StoreEntitySet="RequestLog">
+                <ScalarProperty Name="VrijemeKraja" ColumnName="VrijemeKraja" />
+                <ScalarProperty Name="VrijemePocetka" ColumnName="VrijemePocetka" />
+                <ScalarProperty Name="Request" ColumnName="Request" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
